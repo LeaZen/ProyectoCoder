@@ -1,0 +1,27 @@
+{% extends 'padre.html' %}
+
+
+{% block contenidoQueCambia %}
+    
+    
+    <form action="{% url 'CursoFormulario' %}" method="post"> {% csrf_token %}
+        
+        {{miFormulario.as_p}}
+        
+        <button type="submit">Enviar</button>
+
+    </form>
+        
+    <form action="{% url 'Buscar' %}" method="get"> 
+        
+        <p>Camada: <input type="number" name="camada"></p>
+         
+         <button type="submit">Buscar</button>
+     </form>
+
+{% endblock contenidoQueCambia %}
+
+        {% comment %}
+        <p>Curso: <input type="text" name="curso" id=""></p>
+        <p>Camada: <input type="number" name="camada" id=""></p>
+        {% endcomment %}

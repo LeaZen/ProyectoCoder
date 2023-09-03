@@ -1,8 +1,12 @@
 from django.shortcuts import render
-from .models import Curso
-from django.http import HttpResponse
-
+from .models import Curso, Estudiante, Profesor, Entregable
+from django.http import HttpResponse, HttpRequest
+from .forms import *
 # Create your views here.
+
+def inicio (request):
+    #return HttpResponse ("Vista de Inicio")
+    return render(request, "inicio.html",)
 
 def curso (request, nombre, camada):
     curso = Curso(nombre=nombre, camada=camada)
@@ -15,3 +19,111 @@ def lista_cursos (request):
     lista = Curso.objects.all()
 
     return render(request, "Lista_cursos.html", {"lista_cursos" : lista})
+
+def cursos (request):
+    return render(request, "cursos.html")
+    
+
+def estudiantes (request):
+    return render(request, "estudiantes.html")
+    
+
+
+def estudiante_formulario (request: HttpRequest):
+
+    print("method", request.method)
+    print("post", request.POST)
+
+    elFormulario = EstudianteFormulario(request.POST) 
+
+    if request.method == "POST":
+
+        if elFormulario.is_valid():
+            print (elFormulario.cleaned_data)
+            data = elFormulario.cleaned_data
+
+            estudiante = Estudiante (nombre=data ["nombre"], apellido=data ["apellido"], email=data ["email"])
+            estudiante.save()
+            return render(request, "inicio.html", {"mensaje" : "Estudiante ingresado a la base de datos con éxito"})
+        else:
+            return render(request, "inicio.html", {"mensaje" : "Estudiante no ingresado"})
+    else:    
+        elFormulario = EstudianteFormulario()
+        return render(request, "estudiante_formulario.html", {"elFormulario":elFormulario})
+
+
+
+def curso_formulario (request: HttpRequest):
+
+    print("method", request.method)
+    print("post", request.POST)
+
+    miFormulario = CursoFormulario(request.POST) 
+
+    if request.method == "POST":
+
+        if miFormulario.is_valid():
+            print (miFormulario.cleaned_data)
+            data = miFormulario.cleaned_data
+
+            curso = Curso (nombre=data ["curso"], camada=data ["camada"])
+            curso.save()
+            return render(request, "inicio.html", {"mensaje" : "Curso creado con éxito"})
+        else:
+            return render(request, "inicio.html", {"mensaje" : "Formulario inválido"})
+    else:    
+        miFormulario = CursoFormulario()
+        return render(request, "curso_formulario.html", {"miFormulario":miFormulario})
+    
+
+def busqueda_camada(request):
+    
+    return render(request, "busqueda_camada.html")
+
+def buscar(request):
+
+    if request.GET ["camada"]:
+        camada = request.GET ["camada"]
+        curso = Curso.objects.get(camada=camada)
+        if curso:
+            return render(request, "resultado_buqueda.html", {"curso":curso})
+        
+    else:
+        return HttpResponse("No escribió una camada existente")
+
+    #else:
+    #return HttpResponse("No escribió una camada existente")
+
+    
+#return HttpResponse(f"Estoy buscando la camada {request.GET['camada']}")
+
+def profesores (request):
+    return render(request, "profesores.html")
+
+
+def profesores_formulario (request: HttpRequest):
+
+    print("method", request.method)
+    print("post", request.POST)
+
+    liFormulario = ProfesorFormulario(request.POST) 
+
+    if request.method == "POST":
+
+        if liFormulario.is_valid():
+            print (liFormulario.cleaned_data)
+            data = liFormulario.cleaned_data
+
+            profesor = Profesor (nombre=data ["nombre"], apellido=data ["apellido"], email=data ["email"], profesion=data ["profesion"]  )
+            profesor.save()
+            return render(request, "inicio.html", {"mensaje" : "Profesor ingresado a la base de datos con éxito"})
+        else:
+            return render(request, "inicio.html", {"mensaje" : "Profesor no ingresado"})
+    else:    
+        liFormulario = ProfesorFormulario()
+        return render(request, "profesor_formulario.html", {"liFormulario":liFormulario})
+
+
+
+def entregables (request):
+    return render(request, "entregables.html")
