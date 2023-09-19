@@ -1,12 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursos</title>
-</head>
+{% extends 'padre.html' %}
 
-<body style="background-color: lightcoral;">
-        <h1>"Vista de Cursos"</h1>
-</body>
-</html>
+
+{% block contenidoQueCambia %}
+    
+    
+    <form action="{% url 'CursoFormulario' %}" method="post"> {% csrf_token %}
+        
+        {{miFormulario.as_p}}
+        
+        <button type="submit">Enviar</button>
+
+    </form>
+        
+    <form action="{% url 'Buscar' %}" method="get"> 
+        
+        <p>Camada: <input type="number" name="camada"></p>
+         
+         <button type="submit">Buscar</button>
+     </form>
+
+{% endblock contenidoQueCambia %}
