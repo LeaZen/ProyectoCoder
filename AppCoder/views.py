@@ -2,6 +2,10 @@ from django.shortcuts import render
 from .models import Curso, Estudiante, Profesor, Entregable
 from django.http import HttpResponse, HttpRequest
 from .forms import *
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView, UpdateView, CreateView
+from django.views.generic.list import ListView
+
 # Create your views here.
 
 def inicio (request):
@@ -24,33 +28,32 @@ def cursos (request):
     return render(request, "cursos.html")
     
 
-def estudiantes (request):
-    return render(request, "estudiantes.html")
-    
+class CursoList(ListView):
+    model = Curso
+    template_name = "curso_list.html"
+    context_object_name = "cursos"
 
+class CursoDetail(DetailView):
+    model = Curso
+    template_name = "curso_detail.html"
+    context_object_name = "curso"
 
-def estudiante_formulario (request: HttpRequest):
+class CursoCreate(CreateView):
+    model = Curso
+    template_name = "curso_create.html"
+    fields = ["nombre", "camada"]
+    success_url = '/app-coder/inicio'
 
-    print("method", request.method)
-    print("post", request.POST)
+class CursoUpdate(UpdateView):
+    model = Curso
+    template_name = "curso_update.html"
+    fields = ("__all__")
+    success_url = '/app-coder/inicio'
 
-    elFormulario = EstudianteFormulario(request.POST) 
-
-    if request.method == "POST":
-
-        if elFormulario.is_valid():
-            print (elFormulario.cleaned_data)
-            data = elFormulario.cleaned_data
-
-            estudiante = Estudiante (nombre=data ["nombre"], apellido=data ["apellido"], email=data ["email"])
-            estudiante.save()
-            return render(request, "inicio.html", {"mensaje" : "Estudiante ingresado a la base de datos con éxito"})
-        else:
-            return render(request, "inicio.html", {"mensaje" : "Estudiante no ingresado"})
-    else:    
-        elFormulario = EstudianteFormulario()
-        return render(request, "estudiante_formulario.html", {"elFormulario":elFormulario})
-
+class CursoDelete(DeleteView):
+    model = Curso
+    template_name = "curso_delete.html"
+    success_url = '/app-coder/inicio'
 
 
 def curso_formulario (request: HttpRequest):
@@ -96,6 +99,36 @@ def buscar(request):
 
     
 #return HttpResponse(f"Estoy buscando la camada {request.GET['camada']}")
+
+def estudiantes (request):
+    return render(request, "estudiantes.html")
+    
+
+
+def estudiante_formulario (request: HttpRequest):
+
+    print("method", request.method)
+    print("post", request.POST)
+
+    elFormulario = EstudianteFormulario(request.POST) 
+
+    if request.method == "POST":
+
+        if elFormulario.is_valid():
+            print (elFormulario.cleaned_data)
+            data = elFormulario.cleaned_data
+
+            estudiante = Estudiante (nombre=data ["nombre"], apellido=data ["apellido"], email=data ["email"])
+            estudiante.save()
+            return render(request, "inicio.html", {"mensaje" : "Estudiante ingresado a la base de datos con éxito"})
+        else:
+            return render(request, "inicio.html", {"mensaje" : "Estudiante no ingresado"})
+    else:    
+        elFormulario = EstudianteFormulario()
+        return render(request, "estudiante_formulario.html", {"elFormulario":elFormulario})
+
+
+
 
 def profesores (request):
     return render(request, "profesores.html")
