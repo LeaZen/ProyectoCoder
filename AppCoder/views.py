@@ -5,8 +5,60 @@ from .forms import *
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.views.generic.list import ListView
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 # Create your views here.
+
+def loginView(request):
+
+    if request.method == "POST":
+        miFormulario = AuthenticationForm(request, data=request.POST)
+
+        if miFormulario.is_valid():
+            data = miFormulario.cleaned_data
+            usuario = data["username"]
+            psw =  data["password"]
+
+            user = authenticate(username=usuario, password=psw)
+
+            if user:
+                login(request, user) 
+                return render(request,"inicio.html", {"mensaje": f"Hola {usuario}"})
+            else:
+                return render(request,"inicio.html", {"mensaje": "Datos Incorrectos"})
+        else:
+                return render(request,"inicio.html", {"mensaje": "Formulario Inválido"})  
+          
+    else:
+        miFormulario = AuthenticationForm()
+        return render(request,"login.html", {"miFormulario":miFormulario})
+    
+
+def register(request):
+
+    if request.method == "POST":
+        miFormulario = UserCreationForm(request.POST)
+
+        if miFormulario.is_valid():
+            data = miFormulario.cleaned_data
+            usuario = data ["username"]
+            miFormulario.save()
+
+            return render(request,"inicio.html", {"mensaje": f"Usuario {usuario} creado con éxito"})
+               
+        else:
+            return render(request,"inicio.html", {"mensaje": "Formulario Inválido"})  
+          
+    else:
+        miFormulario = UserCreationForm()
+        return render(request,"registro.html", {"miFormulario":miFormulario})
+    
+
 
 def inicio (request):
     #return HttpResponse ("Vista de Inicio")
@@ -18,6 +70,7 @@ def curso (request, nombre, camada):
     return HttpResponse(f"""
                         <p> Curso: {curso.nombre} - Camada: {curso.camada} agregado! </p>
                         """)
+
 
 def lista_cursos (request):
     lista = Curso.objects.all()
@@ -33,7 +86,7 @@ class CursoList(ListView):
     template_name = "curso_list.html"
     context_object_name = "cursos"
 
-class CursoDetail(DetailView):
+class CursoDetail(LoginRequiredMixin, DetailView):
     model = Curso
     template_name = "curso_detail.html"
     context_object_name = "curso"
@@ -133,7 +186,8 @@ def estudiante_formulario (request: HttpRequest):
 def profesores (request):
     return render(request, "profesores.html")
 
-
+#@login_required
+@staff_member_required(login_url='/app-coder/login')
 def profesores_formulario (request: HttpRequest):
 
     print("method", request.method)
