@@ -8,10 +8,14 @@
 
         
         {% if user.is_authenticated %}
-        <p>Bienvenido {{user.username}} </p>
-        <a class="btn btn-primary" href="{% url 'Logout'%}">Logout</a>
+            {% if url %}
+                <img src="{{url}}" height="30px" alt="avatar">
+            {% endif %}
+            <p>Bienvenido {{user.username}} </p>
+            <a class="btn btn-primary" href="{% url 'Logout'%}">Logout</a>
+            <a class="btn btn-primary" href="{% url 'EditarPerfil'%}">Edit</a>
         {% else %}
-        <a class="btn btn-primary" href="{% url 'Login'%}">Login</a>
+            <a class="btn btn-primary" href="{% url 'Login'%}">Login</a>
         {% endif %}
     </div>
 </nav>

@@ -9,3 +9,4 @@ class CursoAdmin (admin.ModelAdmin):
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Estudiante)
 admin.site.register(Profesor)
+admin.site.register(Avatar)

@@ -7,6 +7,8 @@ urlpatterns = [
     path('login', loginView, name = "Login"),
     path('registrar', register, name = "Registrar"),
     path('logout', LogoutView.as_view(template_name="inicio.html"), name = "Logout"),
+    path('editar-perfil/', editar_perfil, name = "EditarPerfil"),
+    path('agregar-avatar/', agregar_avatar, name = "AgregarAvatar"),
     path('agrega_curso/<nombre>/<camada>', curso),
     path('listado_de_cursos/', lista_cursos),
     path('cursos/', curso_formulario, name = "CursoFormulario"),

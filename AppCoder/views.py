@@ -1,16 +1,16 @@
 from django.shortcuts import render
-from .models import Curso, Estudiante, Profesor, Entregable
 from django.http import HttpResponse, HttpRequest
-from .forms import *
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.views.generic.list import ListView
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
+from .models import Curso, Estudiante, Profesor, Entregable, Avatar
+from .forms import *
 
 # Create your views here.
 
@@ -58,11 +58,62 @@ def register(request):
         miFormulario = UserCreationForm()
         return render(request,"registro.html", {"miFormulario":miFormulario})
     
+def editar_perfil (request):
 
+    usuario = request.user
+
+    if request.method == "POST":
+        
+        miFormulario = UserEditForm(request.POST, instance=request.user)
+
+        if miFormulario.is_valid():
+
+           data = miFormulario.cleaned_data
+
+           usuario.first_name = data ["first_name"]
+           usuario.last_name = data ["last_name"]
+           usuario.email = data ["email"]
+           usuario.set_password(data["password1"])
+           usuario.save()
+           #miFormulario = AuthenticationForm()
+           return render(request,"inicio.html", {"mensaje": "Perfil actualizado con éxito"})
+            
+        else:
+            return render(request,"editar_perfil.html", {"miFormulario":miFormulario})
+
+
+    else:
+        miFormulario = UserEditForm(instance=request.user)
+        return render(request,"editar_perfil.html", {"miFormulario":miFormulario})
 
 def inicio (request):
+
+    try:
+        avatar = Avatar.objects.get(user=request.user.id)
+        return render(request, "inicio.html", {"url": avatar.imagen.url})
+    except:
+
     #return HttpResponse ("Vista de Inicio")
-    return render(request, "inicio.html",)
+        return render(request, "inicio.html")
+    
+def agregar_avatar(request):
+
+    if request.method == "POST":
+        miFormulario = AvatarFormulario(request.POST, request.FILES)
+
+        if miFormulario.is_valid():
+            data = miFormulario.cleaned_data
+            avatar = Avatar(user=request.user, imagen=data["imagen"])
+            avatar.save()
+
+            return render(request,"inicio.html", {"mensaje": f"Avatar actualizado con éxito"})
+               
+        else:
+            return render(request,"inicio.html", {"mensaje": "Formulario Inválido"})  
+          
+    else:
+        miFormulario = AvatarFormulario
+        return render(request,"agregarAvatar.html", {"miFormulario":miFormulario})
 
 def curso (request, nombre, camada):
     curso = Curso(nombre=nombre, camada=camada)
