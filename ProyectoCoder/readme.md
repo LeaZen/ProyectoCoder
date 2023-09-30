@@ -1,3 +1,5 @@
+Leandro Zenocratti.
+
 La aplicación cuenta con 3 clases de tipo Models. Cursos, Estudiantes y Profesores.
 
 Las tres clases poseen 6 o más tipos de campo de modelo, entre ellos un campo ImageField.
