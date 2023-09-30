@@ -1,21 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Cursos</title>
-</head>
-<body>
+{% extends 'padre.html' %}
 
-    <ul>
+{% block contenidoQueCambia %}
+
+<section class="listado_de_cursos">
         
         {% for curso in lista_cursos %}
-            <li> {{curso.nombre}} - {{curso.camada}} </li>
+
+        <div class="card" style="width: 18rem;">
+          {% if curso.imagen and curso.imagen.url %}
+            <img src="{{ curso.imagen.url }}" class="card-img-top" alt="..."> 
+          {% else %}
+            <img src="" class="card-img-top" alt="...">
+          {% endif %} 
+            <div class="card-body">
+              <h5 class="card-title">{{curso.nombre}}</h5>
+              <p class="card-text">Camada - {{curso.camada}}  </p>
+              <a class="btn btn-primary" href="{% url 'ActualizaCursos' curso.id %}">Edit</a> 
+              <a class="btn btn-primary" href="{% url 'EliminaCursos' curso.id %}">Delete</a>
+              <a class="btn btn-primary" href="{% url 'CreaCursos' %}">Create</a>
+            </div>
+          <a class="btn btn-primary" href="{% url 'DetalleCursos' curso.id %}">Ver Curso</a>
+        </div>
             
         {% endfor %}
             
+    </section>
 
-    </ul>
-    
-</body>
-</html>
+{% endblock contenidoQueCambia %}
+

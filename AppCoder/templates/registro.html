@@ -1,9 +1,15 @@
-{% extends 'padre.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
 
+<body style="background-color: lightblue;">
+    
+    <h1>Iniciar Registro</h1>
 
-{% block contenidoQueCambia %}
-    
-    
     <form action="{% url 'Registrar' %}" method="post"> {% csrf_token %}
         
         {{miFormulario.as_p}}
@@ -12,5 +18,5 @@
 
     </form>
         
-
-{% endblock contenidoQueCambia %}
+</body>
+</html>

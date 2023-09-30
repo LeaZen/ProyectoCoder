@@ -8,9 +8,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-
+from django.utils.decorators import method_decorator
 from .models import Curso, Estudiante, Profesor, Entregable, Avatar
 from .forms import *
+import os
 
 # Create your views here.
 
@@ -49,7 +50,7 @@ def register(request):
             usuario = data ["username"]
             miFormulario.save()
 
-            return render(request,"inicio.html", {"mensaje": f"Usuario {usuario} creado con éxito"})
+            return render(request,"inicio.html", {"mensaje": f"Hola {usuario} iniciá sesión para acceder al sitio."})
                
         else:
             return render(request,"inicio.html", {"mensaje": "Formulario Inválido"})  
@@ -114,6 +115,12 @@ def agregar_avatar(request):
     else:
         miFormulario = AvatarFormulario
         return render(request,"agregarAvatar.html", {"miFormulario":miFormulario})
+    
+
+def about_me (request):
+    return render(request, "about_me.html")
+
+
 
 def curso (request, nombre, camada):
     curso = Curso(nombre=nombre, camada=camada)
@@ -123,10 +130,23 @@ def curso (request, nombre, camada):
                         """)
 
 
-def lista_cursos (request):
+def lista_cursos(request):
     lista = Curso.objects.all()
+    url = request.build_absolute_uri('/media/jpgcursos/')
 
-    return render(request, "Lista_cursos.html", {"lista_cursos" : lista})
+    if request.user.is_authenticated:
+        try:
+            avatar = Avatar.objects.get(user=request.user)
+            url = avatar.imagen.url
+        except Avatar.DoesNotExist:
+            url = None
+    else:
+        url = None
+
+    return render(request, "Lista_cursos.html", {"lista_cursos": lista, "url": url})
+
+    
+
 
 def cursos (request):
     return render(request, "cursos.html")
@@ -136,24 +156,32 @@ class CursoList(ListView):
     model = Curso
     template_name = "curso_list.html"
     context_object_name = "cursos"
+    fields = ['imagen',]
 
-class CursoDetail(LoginRequiredMixin, DetailView):
+
+    
+    
+
+   
+class CursoDetail(DetailView):
     model = Curso
     template_name = "curso_detail.html"
     context_object_name = "curso"
-
+@method_decorator(staff_member_required, name='dispatch')
 class CursoCreate(CreateView):
     model = Curso
     template_name = "curso_create.html"
-    fields = ["nombre", "camada"]
+    fields = ("__all__")
     success_url = '/app-coder/inicio'
-
+@method_decorator(staff_member_required, name='dispatch')
 class CursoUpdate(UpdateView):
     model = Curso
     template_name = "curso_update.html"
     fields = ("__all__")
     success_url = '/app-coder/inicio'
 
+
+@method_decorator(staff_member_required, name='dispatch')
 class CursoDelete(DeleteView):
     model = Curso
     template_name = "curso_delete.html"

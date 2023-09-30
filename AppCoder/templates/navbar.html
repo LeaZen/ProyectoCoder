@@ -2,10 +2,10 @@
 <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
         <a class="navbar-brand" href="{% url 'Inicio'%}">Inicio</a>
-        <a class="navbar-brand" href="{% url 'ListaCursos' %}">Cursos</a>
+        <a class="navbar-brand" href="{% url 'ListadoDeCursos' %}">Cursos</a>
         <a class="navbar-brand" href="{% url 'EstudianteFormulario'%}">Estudiantes</a>
         <a class="navbar-brand" href="{% url 'ProfesorFormulario'%}">Profesores</a>
-
+        <a class="navbar-brand" href="{% url 'AboutMe'%}">About Me</a>
         
         {% if user.is_authenticated %}
             {% if url %}
@@ -16,6 +16,7 @@
             <a class="btn btn-primary" href="{% url 'EditarPerfil'%}">Edit</a>
         {% else %}
             <a class="btn btn-primary" href="{% url 'Login'%}">Login</a>
+            <a class="btn btn-primary" href="{% url 'Registrar'%}">Sign up</a>
         {% endif %}
     </div>
 </nav>

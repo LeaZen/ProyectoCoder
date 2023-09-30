@@ -45,10 +45,12 @@ class EstudianteFormulario(forms.Form):
     nombre = forms.CharField(max_length=50, required=True)
     apellido = forms.CharField(max_length=50, required=True)
     email = forms.EmailField(required=True)
+    imagen = forms.ImageField()
 
 class ProfesorFormulario(forms.Form):
 
     nombre = forms.CharField(max_length=50, required=True)
     apellido = forms.CharField(max_length=50, required=True)
     email = forms.EmailField(required=True)
-    profesion = forms.CharField(max_length=50, required=True)
+    materia = forms.CharField(max_length=50, required=True)
+    imagen = forms.ImageField()
