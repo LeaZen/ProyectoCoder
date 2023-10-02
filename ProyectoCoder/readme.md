@@ -12,4 +12,6 @@ Login, el cual permite loguearse con los datos de administrador o de usuario nor
 
 La misma posee un admin, donde muestra la información de nuestros usuarios , modelos  y permite crear, modificar y/o borrar. 
 
+A continuación un enlace al video explicativo:
 
+https://drive.google.com/drive/folders/1tqIsBFoTT-hwX0bA2JpCi4qx4RWyrK-9?usp=drive_link

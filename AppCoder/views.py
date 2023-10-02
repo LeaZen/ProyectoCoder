@@ -266,7 +266,7 @@ def profesores (request):
     return render(request, "profesores.html")
 
 #@login_required
-@staff_member_required(login_url='/app-coder/login')
+#@staff_member_required(login_url='/app-coder/login')
 def profesores_formulario (request: HttpRequest):
 
     print("method", request.method)
